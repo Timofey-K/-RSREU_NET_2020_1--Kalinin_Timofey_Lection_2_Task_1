@@ -18,8 +18,8 @@ namespace Task1_Collection1
 
             for (int i = 0; i < A1.Length; i++)
             {
-                Console.WriteLine(A1.Indexator(i));
-            }
+                Console.WriteLine(A1[i]);
+            } 
             Console.WriteLine("--------------------------------");
 
 
@@ -29,8 +29,8 @@ namespace Task1_Collection1
 
             for (int i = 0; i < A1.Length; i++)
             {
-                Console.WriteLine(A1.Indexator(i));
-            }
+                Console.WriteLine(A1[i]);
+            } 
             Console.WriteLine("--------------------------------");
 
             bool r1 = A1.Remove(3);
@@ -39,7 +39,7 @@ namespace Task1_Collection1
 
             for (int i = 0; i < A1.Length; i++)
             {
-                Console.WriteLine(A1.Indexator(i));
+                Console.WriteLine(A1[i]);
             }
             Console.WriteLine("r1 = " + r1);
             Console.WriteLine("r2 = " + r2);
@@ -49,6 +49,7 @@ namespace Task1_Collection1
             Console.WriteLine("Length = " + A1.Length);
             Console.WriteLine("Capacity = " + A1.Capacity);
 
+            Console.WriteLine("--------------------------------");                
         }
     }
 }

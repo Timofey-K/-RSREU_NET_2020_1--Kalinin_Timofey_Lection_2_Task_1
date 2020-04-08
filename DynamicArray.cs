@@ -5,29 +5,26 @@ namespace Task1_Collection1
     public class DynamicArray
     {
 
+        // Length - колличество записаных объектов в массиве
         public int Length { get; private set; }
+
+        //Capacity - емкость всего массива
         public int Capacity { get; private set; }
 
-        public int Indexator(int i)
-        {
-            try
-            {
-                return Arr[i];
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return 0;
-            }
-        }
+        object[] Arr;
 
-        int[] Arr;
+        //Индексатор
+        public object this[int i]
+        {
+            get { return Arr[i]; }
+            set { Arr[i] = value; }
+        }
 
 
         public DynamicArray()
         {
 
-            Arr = new int[8];
+            Arr = new object[8];
             Length = 0;
             Capacity = 8;
 
@@ -36,20 +33,20 @@ namespace Task1_Collection1
         public DynamicArray(int Count)
         {
 
-            Arr = new int[Count];
+            Arr = new object[Count];
             Length = 0;
             Capacity = Count;
 
         }
 
-        public DynamicArray(int[] array)
+        public DynamicArray(object[] array)
         {
-            Arr = new int[array.Length];
+            Arr = new object[array.Length];
             Length = 0;
             Capacity = array.Length;
         }
 
-        public void Add(int x)
+        public void Add(object x)
         {
             if (Capacity > Length)
             {
@@ -61,13 +58,13 @@ namespace Task1_Collection1
                 int tempCap = Capacity;
                 Capacity = Capacity * 2;
 
-                int[] tempArr = new int[tempCap];
+                object[] tempArr = new object[tempCap];
                 for (int i = 0; i < tempCap; i++)
                 {
                     tempArr[i] = Arr[i];
                 }
 
-                Arr = new int[Capacity];
+                Arr = new object[Capacity];
                 for (int i = 0; i < tempCap; i++)
                 {
                     Arr[i] = tempArr[i];
@@ -79,7 +76,7 @@ namespace Task1_Collection1
 
         }
 
-        public void AddRange(int[] arr)
+        public void AddRange(object[] arr)
         {
             int length = arr.Length;
             if (Capacity - Length > length)
@@ -98,13 +95,13 @@ namespace Task1_Collection1
                     Capacity = Capacity * 2;
                 }
 
-                int[] tempArr = new int[tempCap];
+                object[] tempArr = new object[tempCap];
                 for (int i = 0; i < tempCap; i++)
                 {
                     tempArr[i] = Arr[i];
                 }
 
-                Arr = new int[Capacity];
+                Arr = new object[Capacity];
                 for (int i = 0; i < tempCap; i++)
                 {
                     Arr[i] = tempArr[i];
@@ -125,17 +122,15 @@ namespace Task1_Collection1
             bool res;
             if (p < Length)
             {
-                for (; p < Length; p++)
+                for (; p < Length - 1; p++)
                 {
-                    Arr[p - 1] = Arr[p];
-                    Arr[p] = 0;
+                    Arr[p] = Arr[p + 1];
                 }
                 Length--;
                 res = true;
             }
             else if (p == Length)
             {
-                Arr[p - 1] = 0;
                 Length--;
                 res = true;
             }
@@ -146,7 +141,7 @@ namespace Task1_Collection1
             return res;
         }
 
-        public void Insert(int x, int p)
+        public void Insert(object x, int p)
         {
             try
             {
@@ -165,14 +160,14 @@ namespace Task1_Collection1
                     int tempCap = Capacity;
                     Capacity = Capacity * 2;
 
-                    int[] tempArr = new int[tempCap];
+                    object[] tempArr = new object[tempCap];
                     for (int i = 0; i < tempCap; i++)
                     {
                         tempArr[i] = Arr[i];
                     }
 
 
-                    Arr = new int[Capacity];
+                    Arr = new object[Capacity];
                     for (int i = 0; i < p - 1; i++)
                     {
                         Arr[i] = tempArr[i];
@@ -191,6 +186,46 @@ namespace Task1_Collection1
             }
 
         }
+
+        /* public void Filter(object x)
+         {
+             for (int i = 0; i < Length; i++)
+             {
+                 if (Arr[i] != x)
+                 {
+                     Remove(i);
+                    i--;
+                     
+                 }
+             }
+         }*/
+
+
+       /* public delegate object Filter(object x);
+
+        public static void DelegateRemove(object[] arr, int p)
+        {
+            bool res;
+            if (p < arr.Length)
+            {
+                for (; p < arr.Length - 1; p++)
+                {
+                    arr[p] = arr[p + 1];
+                }
+            }
+            else if (p == arr.Length)
+            {
+                arr[p - 1] = 0;                
+            }
+            else
+            {
+                res = false;
+            }
+         }
+
+        Filter fil = DelegateRemove;
+
+        */
 
     }
 }
