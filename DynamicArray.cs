@@ -2,29 +2,40 @@
 
 namespace Task1_Collection1
 {
-    public class DynamicArray
+    public class DynamicArray<T>
     {
-
+        // Task 1
+        //------------------------------------------------------------------------------------------------------------------------------
         // Length - колличество записаных объектов в массиве
         public int Length { get; private set; }
 
         //Capacity - емкость всего массива
         public int Capacity { get; private set; }
 
-        object[] Arr;
+        T[] Arr;
 
         //Индексатор
-        public object this[int i]
+        public T this[int i]
         {
-            get { return Arr[i]; }
+            get
+            {
+                if (i < Length && i >= 0)
+                {
+                    return Arr[i];
+                }
+                else
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+            }
             set { Arr[i] = value; }
         }
-
 
         public DynamicArray()
         {
 
-            Arr = new object[8];
+            Arr = new T[8];
             Length = 0;
             Capacity = 8;
 
@@ -33,20 +44,20 @@ namespace Task1_Collection1
         public DynamicArray(int Count)
         {
 
-            Arr = new object[Count];
+            Arr = new T[Count];
             Length = 0;
             Capacity = Count;
 
         }
 
-        public DynamicArray(object[] array)
+        public DynamicArray(T[] array)
         {
-            Arr = new object[array.Length];
+            Arr = new T[array.Length];
             Length = 0;
             Capacity = array.Length;
         }
 
-        public void Add(object x)
+        public void Add(T x)
         {
             if (Capacity > Length)
             {
@@ -55,177 +66,108 @@ namespace Task1_Collection1
             }
             else
             {
-                int tempCap = Capacity;
-                Capacity = Capacity * 2;
-
-                object[] tempArr = new object[tempCap];
-                for (int i = 0; i < tempCap; i++)
-                {
-                    tempArr[i] = Arr[i];
-                }
-
-                Arr = new object[Capacity];
-                for (int i = 0; i < tempCap; i++)
-                {
-                    Arr[i] = tempArr[i];
-                }
-                Arr[Length] = x;
-                Length++;
+                ExtendArr();
+                Add(x);
             }
-
-
         }
 
-        public void AddRange(object[] arr)
+        public void AddRange(T[] array)
         {
-            int length = arr.Length;
+            int length = array.Length;
             if (Capacity - Length > length)
             {
-                for (int i = 0; i < length; i++)
-                {
-                    Arr[Length] = arr[i];
-                    Length++;
-                }
+                array.CopyTo(Arr, Length);
+                Length += length;
             }
             else
             {
-                int tempCap = Capacity;
-                for (; Capacity - Length < length;)
-                {
-                    Capacity = Capacity * 2;
-                }
-
-                object[] tempArr = new object[tempCap];
-                for (int i = 0; i < tempCap; i++)
-                {
-                    tempArr[i] = Arr[i];
-                }
-
-                Arr = new object[Capacity];
-                for (int i = 0; i < tempCap; i++)
-                {
-                    Arr[i] = tempArr[i];
-                }
-
-                for (int i = 0; i < length; i++)
-                {
-                    Arr[Length] = arr[i];
-                    Length++;
-                }
+                ExtendArr();
+                AddRange(array);
             }
-
-
         }
 
-        public bool Remove(int p)
+        public bool Remove(T x)
         {
-            bool res;
-            if (p < Length)
+            bool res = false;
+
+            int index = Array.IndexOf(Arr, x);
+            if (index >= 0)
             {
-                for (; p < Length - 1; p++)
+                Length--;
+                for (int i = index; i < Length; i++)
                 {
-                    Arr[p] = Arr[p + 1];
+                    Arr[i] = Arr[i + 1];
                 }
-                Length--;
                 res = true;
-            }
-            else if (p == Length)
-            {
-                Length--;
-                res = true;
-            }
-            else
-            {
-                res = false;
             }
             return res;
         }
 
-        public void Insert(object x, int p)
+        public void Insert(T x, int p)
         {
-            try
+            if (p > Length)
             {
-
-                if (Capacity > Length)
-                {
-                    for (int i = Length; i > p - 1; i--)
-                    {
-                        Arr[i] = Arr[i - 1];
-                    }
-                    Arr[p - 1] = x;
-                    Length++;
-                }
-                else
-                {
-                    int tempCap = Capacity;
-                    Capacity = Capacity * 2;
-
-                    object[] tempArr = new object[tempCap];
-                    for (int i = 0; i < tempCap; i++)
-                    {
-                        tempArr[i] = Arr[i];
-                    }
-
-
-                    Arr = new object[Capacity];
-                    for (int i = 0; i < p - 1; i++)
-                    {
-                        Arr[i] = tempArr[i];
-                    }
-                    Arr[p - 1] = x;
-                    for (int i = p; i < Length + 1; i++)
-                    {
-                        Arr[i] = tempArr[i - 1];
-                    }
-                    Length++;
-                }
+                throw new IndexOutOfRangeException();
             }
-            catch (Exception ex)
+            else if (Capacity <= Length)
             {
-                Console.WriteLine(ex);
-            }
-
-        }
-
-        /* public void Filter(object x)
-         {
-             for (int i = 0; i < Length; i++)
-             {
-                 if (Arr[i] != x)
-                 {
-                     Remove(i);
-                    i--;
-                     
-                 }
-             }
-         }*/
-
-
-       /* public delegate object Filter(object x);
-
-        public static void DelegateRemove(object[] arr, int p)
-        {
-            bool res;
-            if (p < arr.Length)
-            {
-                for (; p < arr.Length - 1; p++)
-                {
-                    arr[p] = arr[p + 1];
-                }
-            }
-            else if (p == arr.Length)
-            {
-                arr[p - 1] = 0;                
+                ExtendArr();
+                Insert(x, p);
             }
             else
             {
-                res = false;
+                for (int i = Length; i > p; i--)
+                {
+                    Arr[i] = Arr[i - 1];
+                }
+                Arr[p] = x;
+                Length++;
             }
-         }
+        }
 
-        Filter fil = DelegateRemove;
+        private void ExtendArr()
+        {
+            T[] tempArr = new T[Capacity];
+            Arr.CopyTo(tempArr, 0);
+            Capacity = Capacity * 2;
+            Arr = new T[Capacity];
+            tempArr.CopyTo(Arr, 0);
+        }
 
-        */
+        //------------------------------------------------------------------------------------------------------------------------
+        // Task 2
+        //------------------------------------------------------------------------------------------------------------------------
+
+        public void Filter(Func<T, bool> filter)
+        {
+            for (int i = 0; i < Length; i++)
+            {
+                if (filter(Arr[i]) == false)
+                {
+                    bool r = Remove(Arr[i]);
+                    if (r == true) { i--; }                    
+                }
+            }
+        }
+
+        public void Sort(Func<T, T, int> compare) 
+        {
+            for( int j = 1; j< Length; j++)
+            {
+                for(int i = 0; i < Length - j; i++)
+                {
+                    if (compare(Arr[i], Arr[i+1]) > 0)
+                    {
+                        T temp = Arr[i];
+                        Arr[i] = Arr[i + 1];
+                        Arr[i + 1] = temp;
+                    }
+                }
+            }
+        }
+
+
+
 
     }
 }
